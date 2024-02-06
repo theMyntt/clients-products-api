@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
-const mongo_uri = "mongodb+srv://gabrielaraujo:cmqgww723@database.dllhpou.mongodb.net/";
+const mongo_url = "mongodb+srv://gabrielaraujo:cmqgww723@database.dllhpou.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose
-  .connect(mongo_uri)
+  .connect(mongo_url)
   .then(() => {
-    console.log("Mongo connected on " + MONGO_URI);
+    console.log("Mongo connected on " + mongo_url);
   })
   .catch((error) => {
     console.error("Failed to connect: " + error);
   });
 
-const clientSchema = new mongoose.Schema({
+const clientSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -26,7 +26,7 @@ const clientSchema = new mongoose.Schema({
     unique: true,
   },
   birthday: {
-    type: Date,
+    type: String,
     required: true,
   },
   address: {
@@ -35,7 +35,7 @@ const clientSchema = new mongoose.Schema({
   },
   addressComplement: {
     type: String,
-    required: true,
+    required: false,
   },
   city: {
     type: String,
@@ -46,18 +46,18 @@ const clientSchema = new mongoose.Schema({
     required: true,
   },
   createdAt: {
-    type: Date,
+    type: String,
     default: Date.now,
   },
 });
 
-const requestProductsSchema = new mongoose.Schema({
+const requestProductsSchema = mongoose.Schema({
   pedidoId: {
     type: String,
     required: true,
   },
   createdAt: {
-    type: Date,
+    type: String,
     default: Date.now,
   },
   resumo: {
@@ -66,10 +66,7 @@ const requestProductsSchema = new mongoose.Schema({
   },
 });
 
-const Client = mongoose.model('Client', clientSchema);
+const ClientCollection = mongoose.model('Client', clientSchema);
 const ReqProducts = mongoose.model('ReqProducts', requestProductsSchema);
 
-module.exports =  {
-    Client,
-    ReqProducts
-}
+module.exports = ClientCollection;
