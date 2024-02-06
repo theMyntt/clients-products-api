@@ -69,4 +69,4 @@ const requestProductsSchema = mongoose.Schema({
 const ClientCollection = mongoose.model('Client', clientSchema);
 const ReqProducts = mongoose.model('ReqProducts', requestProductsSchema);
 
-module.exports = ClientCollection;
+module.exports = { ClientCollection, ReqProducts };
