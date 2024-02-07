@@ -6,6 +6,11 @@ const logSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  userId: {
+    type: String,
+    required: true,
+    unique: true
+  },
   itsFor: {
     type: String,
     required: true

@@ -83,6 +83,7 @@ app.put("/products/put", async (req, res) => {
     const logData = {
       id: Math.floor(Math.random() * 100000000000000000),
       itsFor: "products",
+      userId: req.body.userId,
       name: putData.resumo,
       createdAt: new Date(),
     }
