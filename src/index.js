@@ -36,7 +36,7 @@ app.post("/clients/create/", async (req, res) => {
       }
 
       await ClientCollection.insertMany([postData]);
-      
+    
       await logCollection.insertMany([logData]);
 
       res.status(200).json({
@@ -75,13 +75,22 @@ app.get("/clients/", async (req, res) => {
 app.put("/products/put", async (req, res) => {
   try {
     const putData = {
-      pedidoId: req.body.pedidoId,
-      createdAt: req.body.createdAt,
+      pedidoId: Math.floor(Math.random() * 100000000000000000),
+      createdAt: new Date(),
       resumo: req.body.resumo,
     }
 
+    const logData = {
+      id: Math.floor(Math.random() * 100000000000000000),
+      itsFor: "products",
+      name: putData.resumo,
+      createdAt: new Date(),
+    }
+
     await ReqProducts.insertMany([putData]);
-    res.status(200).json(JSON.stringify(putData + "Inserido."));
+    await logCollection.insertMany([logData]);
+
+    res.status(200).json(putData);
   } catch (err) {
     res.status(500).json("Erro interno: " + err);
   }
@@ -97,6 +106,14 @@ app.get("/products/get", async (req, res) => {
     
     const check = await ReqProducts.find();
     res.status(200).json(check);
+  } catch (err) {
+    res.status(500).json("Erro interno: " + err);
+  }
+});
+
+app.get("/log/get", async (req, res) => {
+  try {
+    res.status(200).json(await logCollection.find());
   } catch (err) {
     res.status(500).json("Erro interno: " + err);
   }
