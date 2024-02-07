@@ -73,13 +73,14 @@ app.get("/clients/", async (req, res) => {
     if (check) {
       if (ordenate) {
         arr = dateOrdenate(check);
+
         res.status(200).send(arr);
       } else {
         res.status(200).send(check);
       }
     } else {
       res.status(404).json({
-        message: "Cliente não encontrado",
+        message: "Clientes não encontrados",
       });
     }
   } catch (error) {
