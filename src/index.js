@@ -1,4 +1,4 @@
-const { ClientCollection, ReqProducts } = require("./model/model");
+const { ClientCollection, ReqProducts, logCollection } = require("./model/model");
 const dateOrdenate = require("./utils/dateOrdenate")
 const express = require("express");
 // import expresss from "express";
@@ -18,7 +18,7 @@ app.post("/clients/create/", async (req, res) => {
       addressComplement: req.body.addressComplement,
       city: req.body.city,
       cep: req.body.cep,
-      createdAt: req.body.createdAt,
+      createdAt: new Date(),
     };
 
     const check = await ClientCollection.findOne({email: postData.email});
@@ -28,7 +28,17 @@ app.post("/clients/create/", async (req, res) => {
         message: "Email já cadastrado",
       });
     } else {
+      const logData = {
+        id: Math.floor(Math.random() * 100000000000000000),
+        itsFor: "client",
+        name: postData.name,
+        createdAt: new Date(),
+      }
+
       await ClientCollection.insertMany([postData]);
+      
+      await logCollection.insertMany([logData]);
+
       res.status(200).json({
         message: "Cliente cadastrado com sucesso",
       });
@@ -39,8 +49,8 @@ app.post("/clients/create/", async (req, res) => {
 });
 
 app.get("/clients/", async (req, res) => {
-  const ordenate = req.query.ordanate == true;
-
+  const ordenate = (req.query.ordenate === "true"); 
+  console.log( req.query.ordenate, ordenate)
   try {
     // const getData = {
     //   email: req.query.email.toLowerCase(),
@@ -86,6 +96,7 @@ app.get("/products/get", async (req, res) => {
     // };
     
     const check = await ReqProducts.find();
+    res.status(200).json(check);
   } catch (err) {
     res.status(500).json("Erro interno: " + err);
   }

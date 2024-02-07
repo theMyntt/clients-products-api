@@ -14,13 +14,9 @@ const logSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  desc: {
+  createdAt: {
     type: String,
-    required: true,
-  },
-  createAt: {
-    type: Date,
-    default: Date.now,
+    required: true
   }
 });
 
