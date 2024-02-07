@@ -1,7 +1,7 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
+  "name": "clients-products-api",
+  "version": "0.0.1",
+  "description": "Beta",
   "main": "src/index.js",
   "scripts": {
     "dev": "nodemon"
