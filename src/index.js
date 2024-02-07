@@ -1,7 +1,7 @@
-const { ClientCollection, ReqProducts } = require("./schema");
-
+const { ClientCollection, ReqProducts } = require("./model/model");
+const dateOrdenate = require("./utils/dateOrdenate")
 const express = require("express");
-
+// import expresss from "express";
 const app = express();
 const port = 3000;
 
@@ -39,14 +39,18 @@ app.post("/clients/create/", async (req, res) => {
 });
 
 app.get("/clients/", async (req, res) => {
-  
-  try {
-    const getData = {
-      email: req.query.email.toLowerCase(),
-    };
+  const ordenate = req.query.ordanate == true;
 
-    const check = await ClientCollection.findOne({ email: getData.email });
+  try {
+    // const getData = {
+    //   email: req.query.email.toLowerCase(),
+    // };
+
+    const check = await ClientCollection.find();
     if (check) {
+      if(ordenate) {
+        dateOrdenate(check)
+      }
       res.status(200).send(check);
     } else {
       res.status(404).json({
@@ -58,9 +62,7 @@ app.get("/clients/", async (req, res) => {
   }
 });
 
-app.put("/pedidos/put", async (req, res) => {
-  // inserir pedidos 
-
+app.put("/products/put", async (req, res) => {
   try {
     const putData = {
       pedidoId: req.body.pedidoId,
@@ -70,6 +72,20 @@ app.put("/pedidos/put", async (req, res) => {
 
     await ReqProducts.insertMany([putData]);
     res.status(200).json(JSON.stringify(putData + "Inserido."));
+  } catch (err) {
+    res.status(500).json("Erro interno: " + err);
+  }
+});
+
+app.get("/products/get", async (req, res) => {
+  try {
+    // const getData = {
+    //   pedidoId: req.query.pedidoId,
+    //   createdAt: req.query.createdAt,
+    //   resumo: req.query.resumo,
+    // };
+    
+    const check = await ReqProducts.find();
   } catch (err) {
     res.status(500).json("Erro interno: " + err);
   }
