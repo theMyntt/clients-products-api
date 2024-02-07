@@ -1,16 +1,27 @@
-const { ClientCollection, ReqProducts, logCollection } = require("./model/model");
-const dateOrdenate = require("./utils/dateOrdenate")
+const {
+  ClientCollection,
+  ReqProducts,
+  logCollection,
+} = require("./model/model");
+const dateOrdenate = require("./utils/dateOrdenate");
 const express = require("express");
+const path = require("path");
 // import expresss from "express";
 const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.post("/clients/create/", async (req, res) => {
-  
+app.use(express.static(path.join(__dirname, "../public")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+app.put("/clients/create/", async (req, res) => {
   try {
     const postData = {
       name: req.body.name,
+      userId: Math.floor(Math.random() * 100000000000000000),
       email: req.body.email.toLowerCase(),
       cellphone: req.body.cellphone,
       birthday: req.body.birthday,
@@ -21,8 +32,8 @@ app.post("/clients/create/", async (req, res) => {
       createdAt: new Date(),
     };
 
-    const check = await ClientCollection.findOne({email: postData.email});
-    
+    const check = await ClientCollection.findOne({ email: postData.email });
+
     if (check) {
       res.status(400).json({
         message: "Email já cadastrado",
@@ -30,13 +41,14 @@ app.post("/clients/create/", async (req, res) => {
     } else {
       const logData = {
         id: Math.floor(Math.random() * 100000000000000000),
+        userId: postData.userId,
         itsFor: "client",
         name: postData.name,
         createdAt: new Date(),
-      }
+      };
 
       await ClientCollection.insertMany([postData]);
-    
+
       await logCollection.insertMany([logData]);
 
       res.status(200).json({
@@ -49,19 +61,22 @@ app.post("/clients/create/", async (req, res) => {
 });
 
 app.get("/clients/", async (req, res) => {
-  const ordenate = (req.query.ordenate === "true"); 
-  console.log( req.query.ordenate, ordenate)
+  const ordenate = req.query.ordenate === "true";
+  console.log(req.query.ordenate, ordenate);
   try {
     // const getData = {
     //   email: req.query.email.toLowerCase(),
     // };
 
     const check = await ClientCollection.find();
+    let arr;
     if (check) {
-      if(ordenate) {
-        dateOrdenate(check)
+      if (ordenate) {
+        arr = dateOrdenate(check);
+        res.status(200).send(arr);
+      } else {
+        res.status(200).send(check);
       }
-      res.status(200).send(check);
     } else {
       res.status(404).json({
         message: "Cliente não encontrado",
@@ -78,7 +93,7 @@ app.put("/products/put", async (req, res) => {
       pedidoId: Math.floor(Math.random() * 100000000000000000),
       createdAt: new Date(),
       resumo: req.body.resumo,
-    }
+    };
 
     const logData = {
       id: Math.floor(Math.random() * 100000000000000000),
@@ -86,7 +101,7 @@ app.put("/products/put", async (req, res) => {
       userId: req.body.userId,
       name: putData.resumo,
       createdAt: new Date(),
-    }
+    };
 
     await ReqProducts.insertMany([putData]);
     await logCollection.insertMany([logData]);
@@ -104,7 +119,7 @@ app.get("/products/get", async (req, res) => {
     //   createdAt: req.query.createdAt,
     //   resumo: req.query.resumo,
     // };
-    
+
     const check = await ReqProducts.find();
     res.status(200).json(check);
   } catch (err) {
