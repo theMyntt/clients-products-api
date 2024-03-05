@@ -3,8 +3,7 @@ const requestProductsSchema = require("./schema/requestProductsSchema");
 const logSchema = require("./schema/logSchema");
 
 const mongoose = require("mongoose");
-const mongo_url =
-  "mongodb+srv://gabrielaraujo:cmqgww723@database.dllhpou.mongodb.net/?retryWrites=true&w=majority";
+const mongo_url = process.env.MONGO_URI;
 
 mongoose
   .connect(mongo_url)
