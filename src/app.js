@@ -1,3 +1,5 @@
+import setClients from "./utils/setClients";
+
 const {
   ClientCollection,
   ReqProducts,
@@ -6,9 +8,10 @@ const {
 const dateOrdenate = require("./utils/dateOrdenate");
 const express = require("express");
 const path = require("path");
-// import expresss from "express";
 const app = express();
 const port = 3000;
+
+require("dotenv").config();
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
@@ -17,50 +20,30 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.put("/clients/create/", async (req, res) => {
+app.put("/clients/setclients/", async (req, res) => {
   try {
+    const {name, email, cellphone, birthday, address, addressComplement, city, cep} = req.body;
+
     const postData = {
-      name: req.body.name,
+      name: name,
       userId: Math.floor(Math.random() * 100000000000000000),
-      email: req.body.email.toLowerCase(),
-      cellphone: req.body.cellphone,
-      birthday: req.body.birthday,
-      address: req.body.address,
-      addressComplement: req.body.addressComplement,
-      city: req.body.city,
-      cep: req.body.cep,
+      email: email.toLowerCase(),
+      cellphone: cellphone,
+      birthday: birthday,
+      address: address,
+      addressComplement: addressComplement,
+      city: city,
+      cep: cep,
       createdAt: new Date(),
     };
 
-    const check = await ClientCollection.findOne({ email: postData.email });
-
-    if (check) {
-      res.status(400).json({
-        message: "Email já cadastrado",
-      });
-    } else {
-      const logData = {
-        id: Math.floor(Math.random() * 100000000000000000),
-        userId: postData.userId,
-        itsFor: "client",
-        name: postData.name,
-        createdAt: new Date(),
-      };
-
-      await ClientCollection.insertMany([postData]);
-
-      await logCollection.insertMany([logData]);
-
-      res.status(200).json({
-        message: "Cliente cadastrado com sucesso",
-      });
-    }
-  } catch (error) {
-    res.status(500).json("Error interno: " + error);
+    return setClients(postData);
+  } catch {
+    return res.status(500).json("Erro interno");
   }
 });
 
-app.get("/clients/", async (req, res) => {
+app.get("/clients/getclients", async (req, res) => {
   const ordenate = req.query.ordenate === "true";
   console.log(req.query.ordenate, ordenate);
   try {
@@ -115,24 +98,18 @@ app.put("/products/put", async (req, res) => {
 
 app.get("/products/get", async (req, res) => {
   try {
-    // const getData = {
-    //   pedidoId: req.query.pedidoId,
-    //   createdAt: req.query.createdAt,
-    //   resumo: req.query.resumo,
-    // };
-
     const check = await ReqProducts.find();
-    res.status(200).json(check);
+    return res.status(200).json(check);
   } catch (err) {
-    res.status(500).json("Erro interno: " + err);
+    return res.status(500).json("Erro interno: " + err);
   }
 });
 
 app.get("/log/get", async (req, res) => {
   try {
-    res.status(200).json(await logCollection.find());
+    return res.status(200).json(await logCollection.find());
   } catch (err) {
-    res.status(500).json("Erro interno: " + err);
+    return res.status(500).json("Erro interno: " + err);
   }
 });
 
