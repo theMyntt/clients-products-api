@@ -5,3 +5,5 @@ node_modules/
 # arquivos
 
 .DS_Store
+.env
+.package-lock.json
