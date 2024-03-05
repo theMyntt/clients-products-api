@@ -2,6 +2,8 @@ const clientSchema = require("./schema/clientSchema");
 const requestProductsSchema = require("./schema/requestProductsSchema");
 const logSchema = require("./schema/logSchema");
 
+require("dotenv").config();
+
 const mongoose = require("mongoose");
 const mongo_url = process.env.MONGO_URI;
 

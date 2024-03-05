@@ -1,11 +1,10 @@
-import setClients from "./utils/setClients";
-
 const {
   ClientCollection,
   ReqProducts,
   logCollection,
 } = require("./model/model");
 const dateOrdenate = require("./utils/dateOrdenate");
+const setClients = require("./utils/setClients");
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -20,7 +19,7 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.put("/clients/setclients/", async (req, res) => {
+app.post("/clients/setclients/", async (req, res) => {
   try {
     const {name, email, cellphone, birthday, address, addressComplement, city, cep} = req.body;
 
@@ -37,7 +36,7 @@ app.put("/clients/setclients/", async (req, res) => {
       createdAt: new Date(),
     };
 
-    return setClients(postData);
+    return res.status(200).json(setClients(postData));
   } catch {
     return res.status(500).json("Erro interno");
   }

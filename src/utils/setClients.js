@@ -8,9 +8,7 @@ async function setClients(postData) {
     const check = await ClientCollection.findOne({ email: postData.email });
 
     if (check) {
-      return res.status(400).json({
-        message: "Email já cadastrado",
-      });
+      return "Email já cadastrado";
     }
 
     const logData = {
@@ -25,15 +23,13 @@ async function setClients(postData) {
       await ClientCollection.insertMany([postData]);
       await logCollection.insertMany([logData]);
 
-      return res.status(200).json({
-        message: "Cliente cadastrado com sucesso",
-      });
-    } catch {
-      return res.status(500).json("Erro ao inserir no banco de dados");
+      return "Cliente cadastrado com sucesso";
+    } catch (error) {
+      return error
     }
-  } catch {
-    return res.status(500).json("Erro Interno");
+  } catch (error) {
+    return error
   }
 }
 
-export default setClients;
+module.exports = setClients
